@@ -1,8 +1,6 @@
 # MathMind 2.0 🧠
 ### A Neuro-Symbolic Architecture for Advanced Mathematical Reasoning
 
-**Author:** Raghvendra Goyal  
-**Started:** January 2026  
 **Status:** 🟡 In Progress — MVP (Perception Layer + Verification Layer complete)
 
 ---
