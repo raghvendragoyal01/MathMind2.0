@@ -1,0 +1,24 @@
+# MathMind 2.0 - OCR + SymPy Verification Pipeline
+# Tested on RTX 3050 4GB (4-bit quantized Qwen2.5-VL-2B)
+
+# Core ML
+torch>=2.1.0
+torchvision>=0.16.0
+transformers>=4.49.0
+accelerate>=0.27.0
+bitsandbytes>=0.42.0       # 4-bit quantization
+qwen-vl-utils>=0.0.10      # Qwen2.5-VL image processing
+
+# Image handling
+Pillow>=10.0.0
+pdf2image>=1.16.3          # PDF → image conversion
+PyMuPDF>=1.23.0            # fitz, better PDF handling
+
+# Math verification
+sympy>=1.12
+latex2sympy2>=1.9.1        # LaTeX string → SymPy expression
+
+# Utilities
+rich>=13.0.0               # Pretty terminal output
+click>=8.1.0               # CLI interface
+numpy>=1.24.0
