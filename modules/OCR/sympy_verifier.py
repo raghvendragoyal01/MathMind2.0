@@ -77,14 +77,13 @@ def extract_equations_from_latex(latex_block: str) -> list[str]:
     # Split on \\ (LaTeX line break in aligned environments)
     lines = re.split(r"\\\\", cleaned)
 
-    # Split on & alignment markers, keep right-side
     equations = []
     for line in lines:
-        parts = line.split("&")
-        for part in parts:
-            part = part.strip()
-            if part and len(part) > 1:
-                equations.append(part)
+        # THE FIX 1: Remove alignment markers (&) and newlines instead of splitting on them.
+        line = line.replace("&", "").replace("\n", "").strip()
+        
+        if line and len(line) > 1:
+            equations.append(line)
 
     # Remove empty / comment lines
     equations = [eq for eq in equations if eq and not eq.startswith("%")]
@@ -315,13 +314,14 @@ def _print_report(report: VerificationReport):
         elif eq.verification is True:
             solutions_str = "[green]Identity ✓[/green]"
 
+        # THE FIX 2: Added 'is not None' to prevent the truth value crash in the CLI
         if eq.verification is True:
             status = "[green]✓ Identity[/green]"
         elif eq.solutions:
             status = "[blue]Solved[/blue]"
         elif eq.error:
             status = "[red]✗ Error[/red]"
-        elif eq.sympy_expr:
+        elif eq.sympy_expr is not None:  
             status = "[yellow]Parsed[/yellow]"
         else:
             status = "[red]Failed[/red]"
@@ -340,7 +340,27 @@ def _print_report(report: VerificationReport):
     console.print(table)
     console.print()
 
-
+def report_to_dict(report: VerificationReport) -> dict:
+    """Serialize VerificationReport to a plain dictionary for multiprocessing."""
+    eqs = []
+    for eq in report.equations:
+        eqs.append({
+            "raw_latex": eq.raw_latex,
+            "sympy_expr": str(eq.sympy_expr) if eq.sympy_expr is not None else None,
+            "is_equation": eq.is_equation,
+            "solutions": eq.solutions,
+            "verification": eq.verification,
+            "error": eq.error,
+            "confidence": eq.confidence
+        })
+    return {
+        "raw_latex": report.raw_latex,
+        "total": report.total,
+        "parsed_ok": report.parsed_ok,
+        "verified_ok": report.verified_ok,
+        "overall_confidence": report.overall_confidence,
+        "equations": eqs
+    }
 # ── Quick test ────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":

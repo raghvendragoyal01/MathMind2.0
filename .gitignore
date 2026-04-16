@@ -2,3 +2,6 @@
 __pycache__
 *.pyc
 .env
+.DS_Store
+modules/.DS_Store
+modules/OCR/venv/
